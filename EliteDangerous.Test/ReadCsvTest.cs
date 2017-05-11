@@ -15,6 +15,33 @@
             GetAllSystems();
         }
 
+        public static System.Collections.Generic.IEnumerable<StarSystem> ReadScoopableSystems()
+        {
+            var starSystems = new System.Collections.Generic.List<StarSystem>();
+
+            using (var stream = new System.IO.FileStream(CSV_FILE_PATH2, System.IO.FileMode.Open))
+            {
+                var streamReader = new System.IO.StreamReader(stream);
+                streamReader.ReadLine();
+
+                string line = string.Empty;
+                while (!string.IsNullOrEmpty(line = streamReader.ReadLine()))
+                {
+                    var lineElements = line.Split(new char[] { ';' });
+
+                    var name = lineElements[0];
+
+                    var x = float.Parse(lineElements[1]);
+                    var y = float.Parse(lineElements[2]);
+                    var z = float.Parse(lineElements[3]);
+
+                    starSystems.Add(new StarSystem { Name = name, Location = new System.Numerics.Vector3(x, y, z) });
+                }
+            }
+
+            return starSystems;
+        }
+
         public static System.Collections.Generic.IEnumerable<StarSystem> GetAllSystems()
         {
             var starSystems = new System.Collections.Generic.List<StarSystem>();
@@ -59,6 +86,8 @@
                 {
                     streamWriter.WriteLine("{0};{1};{2};{3}", starSystem.Name.Replace("\"", string.Empty), starSystem.Location.X, starSystem.Location.Y, starSystem.Location.Z);
                 }
+
+                streamWriter.Flush();
             }
         }
 
