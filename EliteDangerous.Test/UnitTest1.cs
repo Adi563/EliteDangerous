@@ -100,7 +100,7 @@ namespace EliteDangerous.Test
 
             while (!nextSystem.Name.Equals(systemTo.Name))
             {
-                var systemClosestToTarget = starSystemsInRange.Where(s => s != null && System.Numerics.Vector3.Distance(nextSystem.Location, s.Location) < 52).OrderBy(s => System.Numerics.Vector3.Distance(systemTo.Location, s.Location)).First();
+                var systemClosestToTarget = starSystemsInRange.Where(s => s != null && System.Numerics.Vector3.Distance(nextSystem.Location, s.Location) < 56.84).OrderBy(s => System.Numerics.Vector3.Distance(systemTo.Location, s.Location)).First();
 
                 System.Diagnostics.Debug.WriteLine("From:{0}, To:{1}, Distance: {2}", nextSystem, systemClosestToTarget, System.Numerics.Vector3.Distance(nextSystem.Location, systemClosestToTarget.Location));
 
