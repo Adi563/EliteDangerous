@@ -67,6 +67,47 @@ namespace EliteDangerous.Test
             });
         }
 
+        [TestMethod]
+        public void PathFromColoniaToSagittariusA()
+        {
+            var starSystemsAll = ReadCsvTest.ReadScoopableSystems();
+
+            var systemFrom = starSystemsAll.First(s => s.Name.Equals("Colonia"));
+            var systemTo = new StarSystem { Name = "Saggitarius A*", Location = new System.Numerics.Vector3(25.21875f, -20.90625f, 25899.97f) };
+
+            starSystemsAll.Add(systemTo);
+
+            var starSystemsInRange = new System.Collections.Generic.List<StarSystem>();
+
+            System.Threading.Tasks.Parallel.For(0, starSystemsAll.Count(), f =>
+            {
+                var starSystem = starSystemsAll.ElementAt(f);
+
+                var vectorDirection = systemTo.Location - systemFrom.Location;
+
+                var factor = GetFactorVectorDirection(starSystem.Location, systemFrom.Location, vectorDirection);
+
+                var vectorFusspunkt = systemFrom.Location + factor * vectorDirection;
+
+                var distance = (vectorFusspunkt - starSystem.Location).Length();
+
+                if (factor >= 0 && factor <= 1 && distance < 50)
+                { starSystemsInRange.Add(starSystem); }
+            });
+
+            var nextSystem = systemFrom;
+            System.Diagnostics.Debug.WriteLine(nextSystem);
+
+            while (!nextSystem.Name.Equals(systemTo.Name))
+            {
+                var systemClosestToTarget = starSystemsInRange.Where(s => s != null && System.Numerics.Vector3.Distance(nextSystem.Location, s.Location) < 52).OrderBy(s => System.Numerics.Vector3.Distance(systemTo.Location, s.Location)).First();
+
+                System.Diagnostics.Debug.WriteLine("From:{0}, To:{1}, Distance: {2}", nextSystem, systemClosestToTarget, System.Numerics.Vector3.Distance(nextSystem.Location, systemClosestToTarget.Location));
+
+                nextSystem = systemClosestToTarget;
+            }
+        }
+
         private static float GetFactorVectorDirection(System.Numerics.Vector3 vectorPoint, System.Numerics.Vector3 vectorFrom, System.Numerics.Vector3 vectorDirection)
         {
             return (-vectorPoint.X * vectorDirection.X + vectorFrom.X * vectorDirection.X - vectorPoint.Y * vectorDirection.Y + vectorFrom.Y * vectorDirection.Y - vectorPoint.Z * vectorDirection.Z + vectorFrom.Z * vectorDirection.Z) / (-(vectorDirection.X*vectorDirection.X) - (vectorDirection.Y * vectorDirection.Y) - (vectorDirection.Z * vectorDirection.Z));
