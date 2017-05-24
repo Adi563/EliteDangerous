@@ -15,7 +15,7 @@
             GetAllSystems();
         }
 
-        public static System.Collections.Generic.IEnumerable<StarSystem> ReadScoopableSystems()
+        public static System.Collections.Generic.IList<StarSystem> ReadScoopableSystems()
         {
             var starSystems = new System.Collections.Generic.List<StarSystem>();
 
@@ -78,11 +78,13 @@
             var starSystems = GetAllSystems();
             var systemIds = ReadJsonTest.GetSystemIdsByMainStarClasses(new string[] { "O", "B", "A", "F", "G", "K", "M" }).ToArray();
 
+            var starSystemsFiltered = starSystems.AsParallel().Where(ss => systemIds.Contains(ss.Id)).ToArray();
+            
             using (var stream = new System.IO.FileStream(CSV_FILE_PATH2, System.IO.FileMode.Create))
             {
                 var streamWriter = new System.IO.StreamWriter(stream, System.Text.Encoding.UTF8);
 
-                foreach (var starSystem in starSystems.Where(ss => systemIds.Contains(ss.Id)))
+                foreach (var starSystem in starSystemsFiltered)
                 {
                     streamWriter.WriteLine("{0};{1};{2};{3}", starSystem.Name.Replace("\"", string.Empty), starSystem.Location.X, starSystem.Location.Y, starSystem.Location.Z);
                 }
