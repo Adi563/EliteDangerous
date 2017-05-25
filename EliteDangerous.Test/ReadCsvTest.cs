@@ -6,7 +6,7 @@
     [TestClass]
     public class ReadCsvTest
     {
-        const string CSV_FILE_PATH = @"C:\Users\Adrian\Downloads\Elite\elite dangerous systems.csv";
+        const string CSV_FILE_PATH = @"C:\Users\Adrian\Downloads\Elite\systems.csv";
         const string CSV_FILE_PATH2 = @"C:\Users\Adrian\Downloads\Elite\scoopable sytems.csv";
 
         [TestMethod]
