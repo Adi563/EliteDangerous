@@ -38,13 +38,13 @@
         {
             var systems = ReadCsvTest.GetAllSystems();
 
-            uint currentItem = 0;
+            int currentItem = -1;
             uint currentGroup = 0;
             var systemsGrouped = systems.GroupBy(system =>
             {
                 currentItem++;
 
-                if (currentItem > 1000)
+                if (currentItem >= 100000)
                 { currentItem = 0; currentGroup++; }
 
                 return currentGroup;
@@ -60,12 +60,14 @@
             {
                 connection.Open();
 
+                const string queryPattern = "INSERT INTO Systems VALUES {0};";
                 foreach (var systemGroup in systemsGrouped)
                 {
-                    string query = string.Concat(systemGroup.Select(system => string.Format("INSERT INTO Systems (Id,Name,X,Y,Z) VALUES ({0},'{1}',{2},{3},{4});", system.Id, system.Name.Replace("\"", string.Empty).Replace("'", "''"), system.Location.X, system.Location.Y, system.Location.Z)));
-
+                    string queryValues = string.Join(",", systemGroup.Select(system => string.Format("({0},'{1}',{2},{3},{4})", system.Id, system.Name.Replace("\"", string.Empty).Replace("'", "''"), system.Location.X, system.Location.Y, system.Location.Z)));
+                    string query = string.Format(queryPattern, queryValues);
                     var commandInsert = connection.CreateCommand();
                     commandInsert.CommandText = query;
+                    commandInsert.CommandTimeout = 1000;
                     commandInsert.ExecuteNonQuery();
                 }
             }
