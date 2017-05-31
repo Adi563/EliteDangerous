@@ -23,25 +23,33 @@
         [TestMethod]
         public void GetSystems()
         {
-            ReadSystems().ToArray();
+            ReadSystems("1 = 1").ToArray();
         }
 
-        public static System.Collections.Generic.IEnumerable<StarSystem> ReadSystems()
+        [TestMethod]
+        public void GetSystemsScoopable()
+        {
+            ReadSystems("Scoopable = 1").ToArray();
+        }
+
+        public static System.Collections.Generic.IEnumerable<StarSystem> ReadSystems(string where)
         {
             var command = connection.CreateCommand();
-            command.CommandText = "SELECT * FROM Systems";
+            command.CommandText = string.Format("SELECT * FROM Systems WHERE {0}", where);
             command.CommandTimeout = 1000;
 
-            var reader = command.ExecuteReader();
-            while (reader.Read())
+            using (var reader = command.ExecuteReader())
             {
-                var id = (uint)reader["Id"];
-                var name = (string)reader["Name"];
-                var x = (float)reader["X"];
-                var y = (float)reader["Y"];
-                var z = (float)reader["Z"];
+                while (reader.Read())
+                {
+                    var id = (uint)reader["Id"];
+                    var name = (string)reader["Name"];
+                    var x = (float)reader["X"];
+                    var y = (float)reader["Y"];
+                    var z = (float)reader["Z"];
 
-                yield return new StarSystem { Id = id, Name = name, Location = new System.Numerics.Vector3(x, y, z) };
+                    yield return new StarSystem { Id = id, Name = name, Location = new System.Numerics.Vector3(x, y, z) };
+                }
             }
         }
 
@@ -106,6 +114,62 @@
             var commandUpdate = connection.CreateCommand();
             commandUpdate.CommandText = "TRUNCATE TABLE Systems";
             commandUpdate.ExecuteNonQuery();
+        }
+
+        [TestMethod]
+        public void UpdateSystemsScoopable()
+        {
+            var systemIdsScoopable = ReadJsonTest.GetSystemIdsByMainStarClasses(new string[] { "O", "B", "A", "F", "G", "K", "M" }).ToArray();
+
+            uint number = 0;
+            uint group = 0;
+            var systemIdsScoopableGrouped = systemIdsScoopable.GroupBy(id =>
+            {
+                number++;
+
+                if (number > 100000)
+                { number = 0; group++; }
+
+                return group;
+            });
+
+            foreach (var systemIdScoopableGrouped in systemIdsScoopableGrouped)
+            {
+                var systemIdsScoopableString = string.Join(",", systemIdScoopableGrouped);
+
+                var commandUpdate = connection.CreateCommand();
+                commandUpdate.CommandText = string.Format("UPDATE Systems SET Scoopable = 1 WHERE Id IN ({0})", systemIdsScoopableString);
+                commandUpdate.CommandTimeout = 1000;
+                commandUpdate.ExecuteNonQuery();
+            }
+        }
+
+        [TestMethod]
+        public void UpdateSystemsUnScoopable()
+        {
+            var systemIdsScoopable = ReadJsonTest.GetSystemIdsByMainStarClasses(new string[] { "L", "TTS", "C", "Y", "T", "DC", "DA", "S", "DQ", "W", "DAZ", "D", "WC", "MS", "AEBE", "WO", "WN", "WNC", "CN", "DB", "DAB", "DCV", "DAV", "CJ", "DBV", "DBZ" }).ToArray();
+
+            uint number = 0;
+            uint group = 0;
+            var systemIdsScoopableGrouped = systemIdsScoopable.GroupBy(id =>
+            {
+                number++;
+
+                if (number > 100000)
+                { number = 0; group++; }
+
+                return group;
+            });
+
+            foreach (var systemIdScoopableGrouped in systemIdsScoopableGrouped)
+            {
+                var systemIdsScoopableString = string.Join(",", systemIdScoopableGrouped);
+
+                var commandUpdate = connection.CreateCommand();
+                commandUpdate.CommandText = string.Format("UPDATE Systems SET Scoopable = 0 WHERE Id IN ({0})", systemIdsScoopableString);
+                commandUpdate.CommandTimeout = 1000;
+                commandUpdate.ExecuteNonQuery();
+            }
         }
     }
 }
