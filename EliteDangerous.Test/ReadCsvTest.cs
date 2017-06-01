@@ -76,7 +76,7 @@
         public void WriteSystemsCsvWithScoopableMainStars()
         {
             var starSystems = GetAllSystems();
-            var systemIds = ReadJsonTest.GetSystemIdsByMainStarClasses(new string[] { "O", "B", "A", "F", "G", "K", "M" }).ToArray();
+            var systemIds = JsonHandler.GetSystemIdsByMainStarClasses(null, new string[] { "O", "B", "A", "F", "G", "K", "M" }).ToArray();
 
             var starSystemsFiltered = starSystems.AsParallel().Where(ss => systemIds.Contains(ss.Id)).ToArray();
             

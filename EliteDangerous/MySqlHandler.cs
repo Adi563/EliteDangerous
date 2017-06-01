@@ -10,6 +10,7 @@
         {
             var stringBuilder = new MySql.Data.MySqlClient.MySqlConnectionStringBuilder();
             stringBuilder.Server = "127.0.0.1";
+            stringBuilder.Port = 3307;
             stringBuilder.UserID = "root";
             stringBuilder.Password = "";
             stringBuilder.Database = "elitedangerous";
