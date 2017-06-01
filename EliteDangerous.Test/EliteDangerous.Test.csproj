@@ -74,6 +74,12 @@
     <Content Include="Libraries\Newtonsoft.Json.pdb" />
     <Content Include="Libraries\Newtonsoft.Json.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EliteDangerous\EliteDangerous.csproj">
+      <Project>{fc232cfd-01da-48d9-a6d6-2cab9a0577e8}</Project>
+      <Name>EliteDangerous</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
