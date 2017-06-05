@@ -29,6 +29,11 @@
             return ReadSystems("Scoopable = 1").ToArray();
         }
 
+        public static StarSystem GetSystem(string name)
+        {
+            return ReadSystems(string.Format("Name = '{0}' LIMIT 1", name)).First();
+        }
+
         public static System.Collections.Generic.IEnumerable<StarSystem> ReadSystems(string where)
         {
             var command = connection.CreateCommand();

@@ -68,14 +68,16 @@ namespace EliteDangerous.Test
         }
 
         [TestMethod]
-        public void PathFromColoniaToSagittariusA()
+        public void PathBetweenSystems()
         {
-            var starSystemsAll = ReadCsvTest.ReadScoopableSystems();
+            float maximumJumpRange = 56.84f;
+            var starSystemsAll = MySqlHandler.GetSystemsScoopable().ToList();
 
-            var systemFrom = starSystemsAll.First(s => s.Name.Equals("Colonia"));
-            var systemTo = new StarSystem { Name = "Saggitarius A*", Location = new System.Numerics.Vector3(25.21875f, -20.90625f, 25899.97f) };
+            var systemFrom = MySqlHandler.GetSystem("Sagittarius A*");
+            var systemTo = MySqlHandler.GetSystem("Hyroks");
 
-            starSystemsAll.Add(systemTo);
+            if (!starSystemsAll.Any(s => s.Id == systemFrom.Id)) { starSystemsAll.Add(systemFrom); }
+            if (!starSystemsAll.Any(s => s.Id == systemTo.Id)) { starSystemsAll.Add(systemTo); }
 
             var starSystemsInRange = new System.Collections.Generic.List<StarSystem>();
 
@@ -95,17 +97,22 @@ namespace EliteDangerous.Test
                 { starSystemsInRange.Add(starSystem); }
             });
 
-            var nextSystem = systemFrom;
-            System.Diagnostics.Debug.WriteLine(nextSystem);
-
-            while (!nextSystem.Name.Equals(systemTo.Name))
+            using (var stream = new System.IO.FileStream(@"C:\Users\Adrian\Downloads\elite\test.csv", System.IO.FileMode.Create))
+            using (var streamWriter = new System.IO.StreamWriter(stream, System.Text.Encoding.UTF8))
             {
-                var systemClosestToTarget = starSystemsInRange.Where(s => s != null && System.Numerics.Vector3.Distance(nextSystem.Location, s.Location) < 56.84).OrderBy(s => System.Numerics.Vector3.Distance(systemTo.Location, s.Location)).First();
+                var nextSystem = systemFrom;
 
-                System.Diagnostics.Debug.WriteLine("From:{0}, To:{1}, Distance: {2}", nextSystem, systemClosestToTarget, System.Numerics.Vector3.Distance(nextSystem.Location, systemClosestToTarget.Location));
+                //streamWriter.WriteLine(nextSystem);
 
-                nextSystem = systemClosestToTarget;
-            }
+                while (!nextSystem.Name.Equals(systemTo.Name))
+                {
+                    var systemClosestToTarget = starSystemsInRange.Where(s => s != null && System.Numerics.Vector3.Distance(nextSystem.Location, s.Location) < maximumJumpRange).OrderBy(s => System.Numerics.Vector3.Distance(systemTo.Location, s.Location)).First();
+
+                    streamWriter.WriteLine("From:{0}, To:{1}, Distance: {2}", nextSystem, systemClosestToTarget, System.Numerics.Vector3.Distance(nextSystem.Location, systemClosestToTarget.Location));
+                    
+                    nextSystem = systemClosestToTarget;
+                }
+            }   
         }
 
         private static float GetFactorVectorDirection(System.Numerics.Vector3 vectorPoint, System.Numerics.Vector3 vectorFrom, System.Numerics.Vector3 vectorDirection)
