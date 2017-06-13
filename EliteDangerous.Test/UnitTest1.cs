@@ -70,11 +70,13 @@ namespace EliteDangerous.Test
         [TestMethod]
         public void PathBetweenSystems()
         {
-            float maximumJumpRange = 56.84f;
-            var starSystemsAll = MySqlHandler.GetSystemsScoopable().ToList();
+            var databaseHandler = new MySqlHandler("localhost", 3307, "root", "k83Wd3/5*");
 
-            var systemFrom = MySqlHandler.GetSystem("Sagittarius A*");
-            var systemTo = MySqlHandler.GetSystem("Hyroks");
+            float maximumJumpRange = 56.84f;
+            var starSystemsAll = databaseHandler.GetSystemsScoopable().ToList();
+
+            var systemFrom = databaseHandler.GetSystem("Sagittarius A*");
+            var systemTo = databaseHandler.GetSystem("Hyroks");
 
             if (!starSystemsAll.Any(s => s.Id == systemFrom.Id)) { starSystemsAll.Add(systemFrom); }
             if (!starSystemsAll.Any(s => s.Id == systemTo.Id)) { starSystemsAll.Add(systemTo); }

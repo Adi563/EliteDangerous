@@ -6,16 +6,18 @@
     [TestClass]
     public class MySqlTest
     {
+        MySqlHandler msSqlHandler = new MySqlHandler("localhost", 3307, "root", "k83Wd3/5*");
+
         [TestMethod]
         public void GetSystems()
         {
-            MySqlHandler.GetSystems();
+            msSqlHandler.GetSystems();
         }
 
         [TestMethod]
         public void GetSystemsScoopable()
         {
-            var systemsScoopable = MySqlHandler.GetSystemsScoopable();
+            var systemsScoopable = msSqlHandler.GetSystemsScoopable();
         }
 
         [TestMethod]
@@ -23,13 +25,13 @@
         {
             var systems = ReadCsvTest.GetAllSystems();
 
-            //MySqlHandler.InsertSystems(systems);
+            msSqlHandler.InsertSystems(systems);
         }
 
         [TestMethod]
         public void DeleteSystems()
         {
-            MySqlHandler.DeleteSystems();
+            msSqlHandler.DeleteSystems();
         }
 
         [TestMethod]
@@ -39,7 +41,7 @@
             using (var stream = new System.IO.FileStream(JSON_FILE_PATH, System.IO.FileMode.Open))
             {
                 var systemIdsScoopable = JsonHandler.GetSystemIdsByMainStarClasses(stream, new string[] { "O", "B", "A", "F", "G", "K", "M" }).ToArray();
-                MySqlHandler.UpdateSystemsScoopable(systemIdsScoopable, true);
+                msSqlHandler.UpdateSystemsScoopable(systemIdsScoopable, true);
             }
         }
 
@@ -50,7 +52,7 @@
             using (var stream = new System.IO.FileStream(JSON_FILE_PATH, System.IO.FileMode.Open))
             {
                 var systemIdsScoopable = JsonHandler.GetSystemIdsByMainStarClasses(stream, new string[] { "L", "TTS", "C", "Y", "T", "DC", "DA", "S", "DQ", "W", "DAZ", "D", "WC", "MS", "AEBE", "WO", "WN", "WNC", "CN", "DB", "DAB", "DCV", "DAV", "CJ", "DBV", "DBZ" }).ToArray();
-                MySqlHandler.UpdateSystemsScoopable(systemIdsScoopable, false);
+                msSqlHandler.UpdateSystemsScoopable(systemIdsScoopable, false);
             }
         }
     }

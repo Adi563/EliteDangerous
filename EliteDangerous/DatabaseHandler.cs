@@ -62,7 +62,7 @@
             {
                 currentItem++;
 
-                if (currentItem >= 1000)
+                if (currentItem >= 10000)
                 { currentItem = 0; currentGroup++; }
 
                 return currentGroup;
