@@ -53,6 +53,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="MsSqlTest.cs" />
     <Compile Include="MySqlTest.cs" />
     <Compile Include="ReadJsonTest.cs" />
     <Compile Include="ReadCsvTest.cs" />
