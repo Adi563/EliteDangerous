@@ -62,7 +62,7 @@
             {
                 currentItem++;
 
-                if (currentItem >= 100000)
+                if (currentItem >= 1000)
                 { currentItem = 0; currentGroup++; }
 
                 return currentGroup;
@@ -71,7 +71,7 @@
             const string queryPattern = "INSERT INTO Systems VALUES {0};";
             foreach (var systemGroup in systemsGrouped)
             {
-                string queryValues = string.Join(",", systemGroup.Select(system => string.Format("({0},'{1}',{2},{3},{4})", system.Id, system.Name.Replace("\"", string.Empty).Replace("'", "''"), system.Location.X, system.Location.Y, system.Location.Z)));
+                string queryValues = string.Join(",", systemGroup.Select(system => string.Format("({0},'{1}',{2},{3},{4},NULL)", system.Id, system.Name.Replace("\"", string.Empty).Replace("'", "''"), system.Location.X, system.Location.Y, system.Location.Z)));
                 string query = string.Format(queryPattern, queryValues);
                 var commandInsert = databaseConnection.CreateCommand();
                 commandInsert.CommandText = query;
@@ -105,7 +105,7 @@
             {
                 number++;
 
-                if (number > 100000)
+                if (number > 1000)
                 { number = 0; group++; }
 
                 return group;
