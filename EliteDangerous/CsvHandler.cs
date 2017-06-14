@@ -42,18 +42,25 @@
             var lineElements = line.Split(new char[] { ',' });
 
             var id = uint.Parse(lineElements[0]);
+            string name = lineElements[2];
+            uint offset = 0;
 
-            uint indexOfLastNameElement = 2;
-            while (!lineElements[indexOfLastNameElement].EndsWith("\""))
-            { indexOfLastNameElement++; }
+            if (lineElements[2].StartsWith("\""))
+            {
+                uint indexOfLastNameElement = 2;
+                while (!lineElements[indexOfLastNameElement].EndsWith("\""))
+                { indexOfLastNameElement++; }
 
-            string[] nameElements = new string[indexOfLastNameElement - 1];
-            System.Array.Copy(lineElements, 2, nameElements, 0, nameElements.Length);
-            var name = string.Join(",", nameElements);
+                string[] nameElements = new string[indexOfLastNameElement - 1];
+                System.Array.Copy(lineElements, 2, nameElements, 0, nameElements.Length);
+                name = string.Join(",", nameElements);
 
-            var x = float.Parse(lineElements[3 + nameElements.Length - 1]);
-            var y = float.Parse(lineElements[4 + nameElements.Length - 1]);
-            var z = float.Parse(lineElements[5 + nameElements.Length - 1]);
+                offset = (uint)nameElements.Length - 1;
+            }
+
+            var x = float.Parse(lineElements[3 + offset]);
+            var y = float.Parse(lineElements[4 + offset]);
+            var z = float.Parse(lineElements[5 + offset]);
 
             return new StarSystem { Id = id, Name = name, Location = new System.Numerics.Vector3(x, y, z) };
         }
