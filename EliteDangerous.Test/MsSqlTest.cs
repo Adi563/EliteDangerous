@@ -23,7 +23,7 @@
         [TestMethod]
         public void InsertSystems()
         {
-            var systems = ReadCsvTest.GetAllSystems();
+            var systems = CsvHandler.GetAllSystems(ReadCsvTest.CSV_FILE_PATH);
 
             msSqlHandler.InsertSystems(systems);
         }

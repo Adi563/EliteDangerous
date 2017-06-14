@@ -6,7 +6,7 @@
     [TestClass]
     public class ReadJsonTest
     {
-        const string JSON_FILE_PATH = @"C:\Users\Adrian\Downloads\Elite\bodies.jsonl";
+        public const string JSON_FILE_PATH = @"C:\Users\Adrian\Downloads\Elite\bodies.jsonl";
 
         [TestMethod]
         public void GetStarClassesTest()

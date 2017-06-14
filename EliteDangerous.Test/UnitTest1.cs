@@ -43,7 +43,7 @@ namespace EliteDangerous.Test
         [TestMethod]
         public void TestMethodEliteStarSystems()
         {
-            var starSystemsAll = ReadCsvTest.GetAllSystems();
+            var starSystemsAll = CsvHandler.GetAllSystems(ReadCsvTest.CSV_FILE_PATH);
 
             var vectorSystemFrom = starSystemsAll.First(s => s.Name.Equals("Sol")).Location;
             var vectorSystemTo = starSystemsAll.First(s => s.Name.Equals("Colonia")).Location;

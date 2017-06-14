@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CsvHandler.cs" />
     <Compile Include="MsSqlHandler.cs" />
     <Compile Include="JsonHandler.cs" />
     <Compile Include="DatabaseHandler.cs" />
