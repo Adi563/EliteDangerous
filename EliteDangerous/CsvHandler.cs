@@ -16,18 +16,9 @@
                 string line = string.Empty;
                 while (!string.IsNullOrEmpty(line = streamReader.ReadLine()))
                 {
-                    var lineElements = line.Split(new char[] { ',' });
+                    var starSystem = ConvertCsvLineToStarSystem(line);
 
-                    if (lineElements.Length != 28) { continue; }
-
-                    var id = uint.Parse(lineElements[0]);
-                    var name = lineElements[2];
-
-                    var x = float.Parse(lineElements[3]);
-                    var y = float.Parse(lineElements[4]);
-                    var z = float.Parse(lineElements[5]);
-
-                    starSystems.Add(new StarSystem { Id = id, Name = name, Location = new System.Numerics.Vector3(x, y, z) });
+                    starSystems.Add(starSystem);
                 }
             }
 
@@ -40,21 +31,31 @@
 
             var starSystems = lines.Except(new string[] { lines[0] }).AsParallel().Select(line =>
             {
-                var lineElements = line.Split(new char[] { ',' });
-
-                if (lineElements.Length != 28) { return null; }
-
-                var id = uint.Parse(lineElements[0]);
-                var name = lineElements[2];
-
-                var x = float.Parse(lineElements[3]);
-                var y = float.Parse(lineElements[4]);
-                var z = float.Parse(lineElements[5]);
-
-                return new StarSystem { Id = id, Name = name, Location = new System.Numerics.Vector3(x, y, z) };
+                return ConvertCsvLineToStarSystem(line);
             });
 
             return starSystems.Where(s => s != null);
+        }
+
+        public static StarSystem ConvertCsvLineToStarSystem(string line)
+        {
+            var lineElements = line.Split(new char[] { ',' });
+
+            var id = uint.Parse(lineElements[0]);
+
+            uint indexOfLastNameElement = 2;
+            while (!lineElements[indexOfLastNameElement].EndsWith("\""))
+            { indexOfLastNameElement++; }
+
+            string[] nameElements = new string[indexOfLastNameElement - 1];
+            System.Array.Copy(lineElements, 2, nameElements, 0, nameElements.Length);
+            var name = string.Join(",", nameElements);
+
+            var x = float.Parse(lineElements[3 + nameElements.Length - 1]);
+            var y = float.Parse(lineElements[4 + nameElements.Length - 1]);
+            var z = float.Parse(lineElements[5 + nameElements.Length - 1]);
+
+            return new StarSystem { Id = id, Name = name, Location = new System.Numerics.Vector3(x, y, z) };
         }
     }
 }

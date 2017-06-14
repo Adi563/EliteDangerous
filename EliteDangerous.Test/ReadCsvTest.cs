@@ -9,39 +9,15 @@
         public const string CSV_FILE_PATH = @"C:\Adi\systems.csv";
 
         [TestMethod]
-        public void ReadAllSystems()
+        public void GetAllSystems()
         {
             CsvHandler.GetAllSystems(CSV_FILE_PATH);
         }
 
         [TestMethod]
-        public void TestMethod1()
+        public void ConvertCsvLineToStarSystem()
         {
-            var systemNames = new string[] { "v374 pegasi" };
-            var starSystems = new System.Collections.Generic.List<StarSystem>();
-
-            using (var stream = new System.IO.FileStream(CSV_FILE_PATH, System.IO.FileMode.Open))
-            {
-                var streamReader = new System.IO.StreamReader(stream);
-
-                string line = string.Empty;
-                while (!string.IsNullOrEmpty(line = streamReader.ReadLine()))
-                {
-                    var lineElements = line.Split(new char[] { ',' });
-
-                    var name = lineElements[2].Replace("\"", string.Empty).ToLower();
-
-                    if (!systemNames.Contains(name)) { continue; }
-
-                    var x = float.Parse(lineElements[3]);
-                    var y = float.Parse(lineElements[4]);
-                    var z = float.Parse(lineElements[5]);
-
-                    starSystems.Add(new StarSystem { Name = name, Location = new System.Numerics.Vector3(x, y, z) });
-
-                    if (starSystems.Count == systemNames.Length) { break; }
-                }
-            }
+            CsvHandler.ConvertCsvLineToStarSystem("109117,1231564,\"WDS J05353 - 0522Ja Jb\",605.3125,-439.25,-1092.46875,0,0,176,None,5,None,80,None,16,Low,10,None,,,,0,1491336391,\"PSH 136\",,,,");
         }
     }
 }
