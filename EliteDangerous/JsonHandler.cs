@@ -33,6 +33,31 @@
             }
         }
 
+        public static System.Collections.Generic.IEnumerable<uint> GetSystemIdsByMainStarClassesHighMemory(string filePath, System.Collections.Generic.IEnumerable<string> starClass)
+        {
+            var lines = System.IO.File.ReadAllLines(filePath, System.Text.Encoding.ASCII);
+
+            var systemIds = lines.AsParallel().Select(line =>
+            {
+                if (string.IsNullOrEmpty(line)) { return uint.MinValue; }
+
+                var jObject = Newtonsoft.Json.Linq.JObject.Parse(line);
+                var isMainStar = jObject.Value<bool?>("is_main_star");
+                if (!(isMainStar.HasValue && isMainStar.Value)) { return uint.MinValue; }
+
+                var spectralClass = jObject.Value<string>("spectral_class");
+
+                if (!starClass.Contains(spectralClass))
+                { return uint.MinValue; }
+
+                var systemId = jObject.Value<uint>("system_id");
+
+                return systemId;
+            });
+
+            return systemIds.Where(s => s > uint.MinValue);
+        }
+
 
         /// <summary>
         /// Gets the star classes.
